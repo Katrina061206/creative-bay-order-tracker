@@ -11,9 +11,8 @@
 | TC-04 | Reject invalid quantities | Try 0, -1, and 1.5 as the quantity. | Application rejects zero, negative, and decimal quantities. | Application rejected all three invalid quantities: 0, -1, and 1.5. | PASS |
 | TC-05 | Reject invalid or future dates | Try an invalid date and a date after today. | Application rejects invalid and future order dates. | Application successfully rejected both the future date and invalid date. | PASS |
 | TC-06 | Update order status | Change an existing order from Pending to Processing, then Completed. | The selected status is updated and displayed correctly. | Application successfully updated the order status from Pending to Processing and then to Completed. | PASS |
-| TC-07 | Preserve orders after refresh | Add an order, refresh the browser, and check the order list. | Previously saved orders remain displayed. | Juan Dela Cruz's order remained visible after refreshing the browser. | PASS |
-| TC-08 | Check application structure | Inspect index.html, style.css, and script.js. | The app uses one HTML page, external CSS and JavaScript, and browser localStorage. | Confirmed one HTML page, separate CSS and JavaScript files, and localStorage implementation. | PASS |
-
+| TC-07 | Preserve orders after refresh | Name: Juan Dela Cruz; Description: Custom Polaroid; Quantity: 3; Refresh the browser. | Previously saved orders remain displayed. | Juan Dela Cruz's order remained visible after refreshing the browser. | PASS |
+| TC-08 | Check application structure | Inspect index.html, style.css, and script.js. | The application uses one HTML page, external CSS and JavaScript files, and browser localStorage. | Confirmed one HTML page, separate CSS and JavaScript files, and localStorage implementation. | PASS |
 
 ## Test Summary
 

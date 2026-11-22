@@ -25,12 +25,12 @@ The business owner can add and manage customer orders by entering the following 
 - Order Description
 - Quantity
 - Order Date
-- Order Status
+- Order Status (Pending, Processing, or Completed)
 
 ### 6. Acceptance Criteria
 
 1. The system must allow the user to add an order with a customer name, order description, quantity, and order date.
-2. The system must reject blank required fields, invalid quantities, and invalid dates.
+2. The system must reject blank required fields, non-positive or non-whole quantities, invalid calendar dates, and future order dates.
 3. The system must display saved orders in an organized list.
 4. The system must allow the user to update an order's status (Pending, Processing, or Completed).
 5. Saved orders must remain available after refreshing the browser using localStorage.
