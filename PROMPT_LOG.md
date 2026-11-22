@@ -8,7 +8,9 @@
 - **Additional Feature:** FR-02 – Business Dashboard and Sales Analytics
 - **Development Tools:** ChatGPT and GitHub Copilot Agent Mode
 
-## Prompt History
+## Existing Prompt and Activity Summaries
+
+**Verification note:** The six numbered summaries below are retained from the existing log; they are not a confirmed count of all prompts or proof that each entry corresponds to exactly one prompt. Current project files can confirm that described features exist, but cannot independently verify original prompt wording, chronology, tool attribution, reviews, or historical test results. Those details are retained as previously reported, not independently verified here. The exact original prompt text is not available in the project files. GitHub push and pull-request claims in Prompt 6 are also not verified by the application files.
 
 ### Prompt 1 – Initial FR-01 Application
 
@@ -107,7 +109,7 @@ The following files support the project:
 
 ## Prompt Logging Reminder
 
-Every additional AI prompt used to develop, fix, improve, or document the application should have its own entry in this file.
+For future logging, add one entry for each confirmed AI prompt used to develop, fix, improve, or document the application. Do not treat the existing six summaries as a confirmed complete prompt history.
 
 Each entry should include:
 
@@ -118,4 +120,4 @@ Each entry should include:
 - Files affected.
 - Review and testing results.
 
-**Note:** The prompt summaries above describe the development activities and are not necessarily the exact original wording entered into ChatGPT or GitHub Copilot. Actual prompt text should be included whenever available.
+**Note:** The summaries above describe reported development activities and are not the exact original wording entered into ChatGPT or GitHub Copilot. Include original prompt text only when available; otherwise label the entry as a summary and leave unknown details unclaimed.

@@ -46,26 +46,33 @@ The business owner can add, view, search, edit, and manage customer orders using
 - Service Category
 - Order Details
 - Quantity
+- Unit Price
+- Order Total, calculated automatically as quantity × unit price
 - Order Date
 - Order Status (Pending, Processing, Completed)
 
+The unit price must be greater than zero and may have up to two decimal places. The order total is calculated as the quantity multiplied by the unit price.
+
 ### FR-02: Business Dashboard and Sales Analytics
 
-The application provides a dashboard that helps the business owner monitor business activity through order statistics and sales-related information.
+The dashboard displays total orders and Pending, Processing, and Completed order counts, along with recent orders and their status breakdown. Sales analytics include total revenue from completed orders with a valid unit price, today's sales from such orders dated today, units sold in completed orders with a valid unit price, and average order value for completed orders with a valid unit price. A revenue trend can be viewed by day, week, or month, and the best-selling products are ranked by quantities in completed orders with a valid unit price.
+
+These figures are calculated from the order details and prices entered in the application; they are not payment or accounting records.
 
 ## Acceptance Criteria
 
-1. The application allows the owner to add customer orders with all required information.
+1. The application allows the owner to add customer orders with all required information, including a positive unit price.
 2. The application provides the five available service categories.
-3. The application displays saved customer orders in an organized table.
+3. The application calculates the order total by multiplying quantity by unit price and displays saved orders in an organized table.
 4. The owner can edit existing customer orders.
 5. The application allows searching for orders using customer names, service categories, and order details.
 6. Blank customer names and order descriptions are rejected.
-7. Quantity must be a positive whole number.
+7. Quantity must be a positive whole number, and unit price must be greater than zero with no more than two decimal places.
 8. Invalid calendar dates and future order dates are rejected.
 9. The owner can update an order's status to Pending, Processing, or Completed.
-10. The dashboard reflects changes in order status.
-11. Saved orders remain available after refreshing the browser using `localStorage`.
+10. The dashboard reflects changes in order status and its analytics use completed orders with a valid unit price.
+11. The dashboard and analytics display completed-order revenue, today's sales, units sold, average order value, revenue trends by day/week/month, and best-selling products by quantity, using completed orders with a valid unit price.
+12. Saved orders remain available after refreshing the browser using `localStorage`.
 
 ## Technologies
 
@@ -80,4 +87,4 @@ This project uses fictional sample data for demonstration purposes. No real cust
 
 ## Project Version
 
-v0.1.0 (to be tagged after completing the lab steps).
+v0.1.0

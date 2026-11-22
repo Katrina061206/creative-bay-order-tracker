@@ -31,8 +31,12 @@ The business owner can add, view, search, edit, and manage customer orders using
 - Service Category
 - Order Details
 - Quantity
+- Unit Price
+- Order Total, calculated automatically as quantity × unit price
 - Order Date
 - Order Status (Pending, Processing, or Completed)
+
+Unit price is required, must be greater than zero, and may have up to two decimal places. The application calculates each order total by multiplying quantity by unit price.
 
 The application supports the following service categories:
 
@@ -44,18 +48,22 @@ The application supports the following service categories:
 
 **FR-02: Business Dashboard and Sales Analytics**
 
-The application provides a business dashboard that helps the owner monitor order activity through order statistics, status counts, and sales-related information.
+The dashboard displays total orders, Pending/Processing/Completed counts, recent orders, and a status breakdown. Sales analytics display revenue from completed orders with a valid unit price, today's sales from such orders dated today, units sold and average order value for completed orders with a valid unit price. The revenue trend can be viewed by day, week, or month. Best-selling products are ranked by quantities in completed orders with a valid unit price, using the order details entered by the owner.
+
+Sales figures are calculated from recorded order quantities, prices, dates, and statuses; they do not represent verified payments or accounting records.
 
 ### 6. Acceptance Criteria
 
-1. The system must allow the user to add an order with a customer name, service category, order details, quantity, and order date.
-2. The system must reject blank required fields, non-positive or non-whole quantities, invalid calendar dates, and future order dates.
-3. The system must display saved orders in an organized table.
-4. The system must allow the user to search for orders using customer names, service categories, and order details.
-5. The system must allow the user to edit existing customer orders.
-6. The system must allow the user to update an order's status (Pending, Processing, or Completed).
-7. The dashboard must reflect changes in order status and display the implemented business statistics.
-8. Saved orders must remain available after refreshing the browser using localStorage.
+1. The system must allow the user to add an order with a customer name, service category, order details, quantity, positive unit price, order date, and order status.
+2. The system must calculate the order total as quantity multiplied by unit price.
+3. The system must reject blank required fields, non-positive or non-whole quantities, non-positive prices or prices with more than two decimal places, invalid calendar dates, and future order dates.
+4. The system must display saved orders, including unit price and order total, in an organized table.
+5. The system must allow the user to search for orders using customer names, service categories, and order details.
+6. The system must allow the user to edit existing customer orders.
+7. The system must allow the user to update an order's status (Pending, Processing, or Completed).
+8. The dashboard must reflect changes in order status and display the implemented order statistics.
+9. Sales analytics must display completed-order revenue, today's sales, units sold, average order value, daily/weekly/monthly revenue trends, and best-selling products by quantity, calculated from completed orders with a valid unit price.
+10. Saved orders must remain available after refreshing the browser using localStorage.
 
 ### 7. Technologies
 
@@ -72,11 +80,12 @@ The application includes:
 - An order entry form.
 - Five Creative Bay service categories.
 - An organized customer order table.
+- Unit prices and automatically calculated order totals.
 - Order searching and editing.
 - Order status management.
 - Input validation.
 - Local storage of order records.
-- Order statistics and sales-related information.
+- Order statistics and sales analytics based on recorded order data, including completed-order revenue, today's sales, units sold, average order value, revenue trends, and best-selling products for completed orders with a valid unit price.
 
 ### 9. Limitations
 
@@ -87,6 +96,7 @@ The application includes:
 - The application is intended for local demonstration.
 - Fictional customer information will be used during testing and demonstration.
 - Order data is not automatically synchronized across different devices or browsers.
+- Sales analytics are calculated from entered order data and completion statuses; the application does not verify payments or provide accounting records.
 
 ### 10. Privacy and Data Protection
 
