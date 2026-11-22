@@ -30,7 +30,7 @@ The business owner can add and update customer orders using the following inform
 1. The application allows the owner to add and view customer orders.
 2. The owner can edit order details and update the status to Pending, Processing, or Completed.
 3. Blank customer names and order descriptions are rejected.
-4. Quantity must be a positive whole number from 1 to 9999.
+4. Quantity must be a positive whole number.
 5. Invalid calendar dates and future order dates are rejected.
 6. Saved orders remain available after refreshing the browser using localStorage.
 

@@ -33,8 +33,8 @@ function loadOrders() {
       order && typeof order.id === "string" && order.id.length > 0 &&
       typeof order.customer === "string" && order.customer.trim().length > 0 &&
       typeof order.description === "string" && order.description.trim().length > 0 &&
-      Number.isInteger(order.quantity) &&
-      order.quantity >= 1 && order.quantity <= 9999 &&
+      Number.isSafeInteger(order.quantity) &&
+      order.quantity >= 1 &&
       isValidOrderDate(order.date) &&
       VALID_STATUSES.includes(order.status)
     );
@@ -176,7 +176,8 @@ form.addEventListener("submit", event => {
 
   const name = customer.value.trim();
   const details = description.value.trim();
-  const qty = Number(quantity.value);
+  const quantityValue = quantity.value;
+  const qty = Number(quantityValue);
   const date = orderDate.value;
 
   if (!name || !details || !date) {
@@ -184,8 +185,8 @@ form.addEventListener("submit", event => {
     return;
   }
 
-  if (!Number.isInteger(qty) || qty < 1 || qty > 9999) {
-    showToast("Quantity must be a whole number from 1 to 9999.");
+  if (!/^[0-9]+$/.test(quantityValue) || !Number.isSafeInteger(qty) || qty < 1) {
+    showToast("Quantity must be a positive whole number.");
     quantity.focus();
     return;
   }
