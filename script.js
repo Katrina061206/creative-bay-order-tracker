@@ -37,13 +37,25 @@ const orderTotal = document.getElementById("orderTotal");
 const orderDate = document.getElementById("orderDate");
 const status = document.getElementById("status");
 
+const editOrderModal = document.getElementById("editOrderModal");
+const editOrderForm = document.getElementById("editOrderForm");
+const editFields = {
+    customer: document.getElementById("editCustomer"),
+    category: document.getElementById("editServiceCategory"),
+    description: document.getElementById("editDescription"),
+    quantity: document.getElementById("editQuantity"),
+    unitPrice: document.getElementById("editUnitPrice"),
+    total: document.getElementById("editOrderTotal"),
+    date: document.getElementById("editOrderDate"),
+    status: document.getElementById("editStatus")
+};
+
 const orderList = document.getElementById("orderList");
 const emptyState = document.getElementById("emptyState");
 
 const search = document.getElementById("search");
 const filter = document.getElementById("filter");
 
-const submitBtn = document.getElementById("submitBtn");
 const cancelEdit = document.getElementById("cancelEdit");
 
 const sidebar = document.getElementById("sidebar");
@@ -331,12 +343,15 @@ function getTotalRevenue() {
 
 function updateOrderTotal() {
 
-    if (!quantity || !unitPrice || !orderTotal) {
-        return;
-    }
+    updateTotal(quantity, unitPrice, orderTotal);
 
-    const qty = Number(quantity.value);
-    const price = Number(unitPrice.value);
+}
+
+
+function updateTotal(quantityInput, priceInput, totalInput) {
+
+    const qty = Number(quantityInput.value);
+    const price = Number(priceInput.value);
 
     if (
         Number.isSafeInteger(qty) &&
@@ -345,11 +360,11 @@ function updateOrderTotal() {
         price > 0
     ) {
 
-        orderTotal.value = formatCurrency(qty * price);
+        totalInput.value = formatCurrency(qty * price);
 
     } else {
 
-        orderTotal.value = "₱0.00";
+        totalInput.value = "₱0.00";
 
     }
 
@@ -362,6 +377,7 @@ function updateOrderTotal() {
 
 orderDate.max = todayString();
 orderDate.value = todayString();
+editFields.date.max = todayString();
 
 
 /* =========================================================
@@ -1001,204 +1017,158 @@ function render() {
    FORM VALIDATION AND ORDER SUBMISSION
 ========================================================= */
 
-form.addEventListener("submit", event => {
+function getValidatedOrder(fields) {
 
-    event.preventDefault();
-
-
-    const name = customer.value.trim();
-const category = serviceCategory.value;
-const details = description.value.trim();
-
-    const quantityValue = quantity.value;
+    const name = fields.customer.value.trim();
+    const category = fields.category.value;
+    const details = fields.description.value.trim();
+    const quantityValue = fields.quantity.value;
     const qty = Number(quantityValue);
-
-    const priceValue = unitPrice.value.trim();
+    const priceValue = fields.unitPrice.value.trim();
     const price = Number(priceValue);
+    const date = fields.date.value;
+    const selectedStatus = fields.status.value;
 
-    const date = orderDate.value;
-    const selectedStatus = status.value;
+    if (!name || !category || !details || !date || !priceValue) {
+        showToast("Please complete all required fields.");
+        return null;
+    }
 
-
-    /* Required fields */
-
- /* Required fields */
-
-if (!name || !category || !details || !date || !priceValue) {
-
-    showToast("Please complete all required fields.");
-    return;
-
-}
-
-
-/* Service category validation */
-
-if (!VALID_CATEGORIES.includes(category)) {
-
-    showToast("Please select a valid service category.");
-
-    serviceCategory.focus();
-
-    return;
-
-}  
-
-    /* Quantity validation */
+    if (!VALID_CATEGORIES.includes(category)) {
+        showToast("Please select a valid service category.");
+        fields.category.focus();
+        return null;
+    }
 
     if (
         !/^[0-9]+$/.test(quantityValue) ||
         !Number.isSafeInteger(qty) ||
         qty < 1
     ) {
-
         showToast("Quantity must be a positive whole number.");
-
-        quantity.focus();
-
-        return;
-
+        fields.quantity.focus();
+        return null;
     }
-
-
-    /* Unit price validation */
 
     if (
         !/^\d+(?:\.\d{1,2})?$/.test(priceValue) ||
         !Number.isFinite(price) ||
         price <= 0
     ) {
-
         showToast("Enter a valid price greater than zero, with up to two decimal places.");
-
-        unitPrice.focus();
-
-        return;
-
+        fields.unitPrice.focus();
+        return null;
     }
-
-
-    /* Total price validation */
 
     if (!Number.isFinite(qty * price)) {
-
         showToast("The calculated order total is too large.");
-
-        unitPrice.focus();
-
-        return;
-
+        fields.unitPrice.focus();
+        return null;
     }
-
-
-    /* Calendar validation */
 
     if (!isCalendarDate(date)) {
-
         showToast("Enter a valid order date.");
-
-        orderDate.focus();
-
-        return;
-
+        fields.date.focus();
+        return null;
     }
-
-
-    /* Future date validation */
 
     if (date > todayString()) {
-
         showToast("Order date cannot be in the future.");
-
-        orderDate.focus();
-
-        return;
-
+        fields.date.focus();
+        return null;
     }
-
-
-    /* Status validation */
 
     if (!VALID_STATUSES.includes(selectedStatus)) {
-
         showToast("Choose a valid order status.");
-
-        status.focus();
-
-        return;
-
+        fields.status.focus();
+        return null;
     }
 
+    return {
+        customer: name,
+        category,
+        description: details,
+        quantity: qty,
+        unitPrice: price,
+        date,
+        status: selectedStatus
+    };
 
-    const wasEditing = editingId !== null;
+}
+
+
+function getAddOrderFields() {
+    return {
+        customer,
+        category: serviceCategory,
+        description,
+        quantity,
+        unitPrice,
+        date: orderDate,
+        status
+    };
+}
+
+
+function getEditOrderFields() {
+    return editFields;
+}
+
+
+form.addEventListener("submit", event => {
+
+    event.preventDefault();
+
+    const orderData = getValidatedOrder(getAddOrderFields());
+
+    if (!orderData) return;
 
     const previousOrders = [...orders];
-
-
-    if (wasEditing) {
-
-        orders = orders.map(order =>
-
-            order.id === editingId
-
-                ? {
-                    ...order,
-                    customer: name,
-category: category,
-description: details,
-quantity: qty,
-                    unitPrice: price,
-                    date,
-                    status: selectedStatus
-                }
-
-                : order
-
-        );
-
-    } else {
-
-        orders.unshift({
-
-            id: createOrderId(),
-
-            customer: name,
-
-            category: category,
-
-            description: details,
-
-            quantity: qty,
-
-            unitPrice: price,
-
-            date,
-
-            status: selectedStatus
-
-        });
-
-    }
-
+    orders.unshift({
+        id: createOrderId(),
+        ...orderData
+    });
 
     if (!saveOrders()) {
-
         orders = previousOrders;
-
         return;
-
     }
 
-
-    resetForm();
-
+    resetAddOrderForm();
     render();
+    showToast("New order added successfully!");
 
-    showToast(
-        wasEditing
-            ? "Order updated successfully!"
-            : "New order added successfully!"
+});
+
+
+editOrderForm.addEventListener("submit", event => {
+
+    event.preventDefault();
+
+    if (editingId === null || !orders.some(order => order.id === editingId)) {
+        closeEditModal();
+        return;
+    }
+
+    const orderData = getValidatedOrder(getEditOrderFields());
+
+    if (!orderData) return;
+
+    const previousOrders = [...orders];
+    orders = orders.map(order =>
+        order.id === editingId
+            ? {...order, ...orderData}
+            : order
     );
+
+    if (!saveOrders()) {
+        orders = previousOrders;
+        return;
+    }
+
+    closeEditModal();
+    render();
+    showToast("Order updated successfully!");
 
 });
 
@@ -1207,61 +1177,54 @@ quantity: qty,
    EDIT ORDER
 ========================================================= */
 
-function editOrder(id) {
+let lastEditTrigger = null;
+
+
+function editOrder(id, trigger) {
 
     const order = orders.find(item => item.id === id);
 
     if (!order) return;
 
-
     editingId = id;
+    lastEditTrigger = trigger;
 
-    customer.value = order.customer;
+    editFields.customer.value = order.customer;
+    editFields.category.value = VALID_CATEGORIES.includes(order.category)
+        ? order.category
+        : "";
+    editFields.description.value = order.description;
+    editFields.quantity.value = order.quantity;
+    editFields.unitPrice.value = order.unitPrice === null
+        ? ""
+        : order.unitPrice;
+    editFields.date.value = order.date;
+    editFields.status.value = order.status;
+    editFields.date.max = todayString();
+    updateTotal(editFields.quantity, editFields.unitPrice, editFields.total);
 
- editingId = id;
+    editOrderModal.hidden = false;
+    document.body.classList.add("modal-open");
+    editFields.customer.focus();
 
-customer.value = order.customer;
-
-serviceCategory.value = VALID_CATEGORIES.includes(order.category)
-    ? order.category
-    : "";
-
-description.value = order.description;
-
-quantity.value = order.quantity;
-
-serviceCategory.value = VALID_CATEGORIES.includes(order.category)
-    ? order.category
-    : "";
-
-description.value = order.description;
-
-    quantity.value = order.quantity;
-
-    unitPrice.value =
-        order.unitPrice === null
-            ? ""
-            : order.unitPrice;
-
-    orderDate.value = order.date;
-
-    status.value = order.status;
+}
 
 
-    document.getElementById("formTitle").textContent =
-        "Edit Order";
+function closeEditModal() {
 
-    submitBtn.textContent = "Save Changes";
+    if (editOrderModal.hidden) return;
 
-    cancelEdit.hidden = false;
+    editOrderModal.hidden = true;
+    document.body.classList.remove("modal-open");
+    editOrderForm.reset();
+    editFields.total.value = "₱0.00";
+    editingId = null;
 
-    updateOrderTotal();
+    if (lastEditTrigger && lastEditTrigger.isConnected) {
+        lastEditTrigger.focus();
+    }
 
-    document.getElementById("orderFormSection")
-        .scrollIntoView({
-            behavior: "smooth",
-            block: "start"
-        });
+    lastEditTrigger = null;
 
 }
 
@@ -1291,7 +1254,7 @@ function deleteOrder(id) {
 
 
     if (editingId === id) {
-        resetForm();
+        closeEditModal();
     }
 
     render();
@@ -1352,24 +1315,16 @@ function changeStatus(id, newStatus) {
    RESET ORDER FORM
 ========================================================= */
 
-function resetForm() {
+function resetAddOrderForm() {
 
     form.reset();
     serviceCategory.value = "";
-    editingId = null;
 
     orderDate.max = todayString();
 
     orderDate.value = todayString();
 
     orderTotal.value = "₱0.00";
-
-    document.getElementById("formTitle").textContent =
-        "Add New Order";
-
-    submitBtn.textContent = "＋ Add Order";
-
-    cancelEdit.hidden = true;
 
 }
 
@@ -1411,7 +1366,7 @@ orderList.addEventListener("click", event => {
     const {action, orderId} = button.dataset;
 
     if (action === "edit") {
-        editOrder(orderId);
+        editOrder(orderId, button);
     }
 
     if (action === "delete") {
@@ -1442,7 +1397,7 @@ orderList.addEventListener("change", event => {
    FORM EVENT LISTENERS
 ========================================================= */
 
-cancelEdit.addEventListener("click", resetForm);
+cancelEdit.addEventListener("click", closeEditModal);
 
 search.addEventListener("input", renderOrderTable);
 
@@ -1451,6 +1406,20 @@ filter.addEventListener("change", renderOrderTable);
 quantity.addEventListener("input", updateOrderTotal);
 
 unitPrice.addEventListener("input", updateOrderTotal);
+
+editFields.quantity.addEventListener("input", () =>
+    updateTotal(editFields.quantity, editFields.unitPrice, editFields.total)
+);
+
+editFields.unitPrice.addEventListener("input", () =>
+    updateTotal(editFields.quantity, editFields.unitPrice, editFields.total)
+);
+
+editOrderModal.addEventListener("click", event => {
+    if (event.target === editOrderModal) {
+        closeEditModal();
+    }
+});
 
 if (revenuePeriod) {
     revenuePeriod.addEventListener("change", renderRevenueChart);
@@ -1483,7 +1452,7 @@ function openSidebar() {
 }
 
 
-function switchView(viewId, sourceButton = null, action = null) {
+function switchView(viewId, sourceButton = null) {
 
     const targetView = document.getElementById(viewId);
 
@@ -1508,9 +1477,9 @@ function switchView(viewId, sourceButton = null, action = null) {
 
         dashboardView: "Dashboard",
 
-        ordersView: action === "add-order"
-            ? "Add New Order"
-            : "Orders",
+        ordersView: "Order Management",
+
+        addOrderView: "Add Order",
 
         analyticsView: "Sales Analytics"
 
@@ -1539,7 +1508,7 @@ function switchView(viewId, sourceButton = null, action = null) {
     } else {
 
         const defaultLink = document.querySelector(
-            `.nav-link[data-view="${viewId}"]:not([data-action])`
+            `.nav-link[data-view="${viewId}"]`
         );
 
         if (defaultLink) {
@@ -1556,16 +1525,8 @@ function switchView(viewId, sourceButton = null, action = null) {
     closeSidebar();
 
 
-    if (action === "add-order") {
-
-        document.getElementById("orderFormSection")
-            .scrollIntoView({
-                behavior: "smooth",
-                block: "start"
-            });
-
+    if (viewId === "addOrderView") {
         customer.focus();
-
     }
 
 }
@@ -1581,8 +1542,7 @@ document.querySelectorAll("[data-view]").forEach(button => {
 
         switchView(
             button.dataset.view,
-            button,
-            button.dataset.action
+            button
         );
 
     });
@@ -1618,6 +1578,7 @@ document.addEventListener("keydown", event => {
 
     if (event.key === "Escape") {
 
+        closeEditModal();
         closeSidebar();
 
     }

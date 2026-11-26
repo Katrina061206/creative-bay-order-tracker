@@ -58,19 +58,14 @@
                 <span>Dashboard</span>
             </button>
 
-            <button type="button"
-                    class="nav-link"
-                    data-view="ordersView">
-                <span class="nav-icon">🛒</span>
-                <span>Orders</span>
+            <button type="button" class="nav-link" data-view="addOrderView">
+                <span class="nav-icon">＋</span>
+                <span>Add Order</span>
             </button>
 
-            <button type="button"
-                    class="nav-link"
-                    data-view="ordersView"
-                    data-action="add-order">
-                <span class="nav-icon">＋</span>
-                <span>Add New Order</span>
+            <button type="button" class="nav-link" data-view="ordersView">
+                <span class="nav-icon">🛒</span>
+                <span>Order Management</span>
             </button>
 
             <button type="button"
@@ -165,9 +160,8 @@
 
                     <button type="button"
                             class="primary-btn"
-                            data-view="ordersView"
-                            data-action="add-order">
-                        <span>＋</span> Add New Order
+                            data-view="addOrderView">
+                        ＋ Add New Order
                     </button>
                 </div>
 
@@ -339,7 +333,7 @@
 
 
             <!-- =====================================
-                 ORDERS VIEW
+                 ORDER MANAGEMENT VIEW
             ====================================== -->
             <section class="page-view" id="ordersView" hidden>
 
@@ -347,105 +341,126 @@
                     <div>
                         <span class="section-eyebrow">ORDER MANAGEMENT</span>
                         <h1>Customer Orders</h1>
-                        <p>Add, view, edit, and monitor your customer orders.</p>
+                        <p>Search, update, and manage your customer orders.</p>
                     </div>
                 </div>
 
-
-                <div class="orders-layout">
-
-                    <!-- ADD / EDIT ORDER FORM -->
-                    <section class="content-card order-form-card" id="orderFormSection">
-
-                        <div class="card-heading">
-                            <div>
-                                <h3 id="formTitle">Add New Order</h3>
-                                <p>Enter the customer's order information.</p>
-                            </div>
-                            <span class="heading-decoration">🌊</span>
+                <section class="content-card order-list-card">
+                    <div class="card-heading">
+                        <div>
+                            <h3>All Orders</h3>
+                            <p>Manage and monitor every customer transaction.</p>
                         </div>
+                    </div>
 
-                        <form id="orderForm" novalidate>
+                    <div class="toolbar">
+                        <div class="search-wrapper">
+                            <span class="search-icon">⌕</span>
+                            <input type="search" id="search" class="search-input"
+                                   aria-label="Search orders"
+                                   placeholder="Search customer or order...">
+                        </div>
+                        <select id="filter" class="filter-select"
+                                aria-label="Filter orders by status">
+                            <option value="All">All Status</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Processing">Processing</option>
+                            <option value="Completed">Completed</option>
+                        </select>
+                    </div>
 
-                            <div class="field">
-                                <label for="customer">Customer Name <span>*</span></label>
-                                <input
-                                    type="text"
-                                    id="customer"
-                                    maxlength="80"
-                                    autocomplete="name"
-                                    placeholder="Enter customer name"
-                                    required>
-                            </div>
-
-                           
-
-<div class="field">
-    <label for="serviceCategory">Service Category <span>*</span></label>
-
-    <select id="serviceCategory" required>
-        <option value="">Select a service category</option>
-        <option value="ID Picture and Photography">ID Picture and Photography</option>
-        <option value="Printing Services">Printing Services</option>
-        <option value="Customized Designs and Layouts">Customized Designs and Layouts</option>
-        <option value="Tarpaulin and Banner Printing">Tarpaulin and Banner Printing</option>
-        <option value="School and Office Documents">School and Office Documents</option>
-    </select>
-</div>
-
-<div class="field">
-    <label for="description">Order Details <span>*</span></label>
-
-    <input
-        type="text"
-        id="description"
-        maxlength="300"
-        placeholder="Describe the customer's order"
-        required>
-</div>
+                    <div class="table-wrap">
+                        <table aria-label="Customer orders">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Customer</th>
+                                    <th scope="col">Service Category</th>
+                                    <th scope="col">Order Details</th>
+                                    <th scope="col">Quantity</th>
+                                    <th scope="col">Unit Price</th>
+                                    <th scope="col">Total</th>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="orderList"></tbody>
+                        </table>
+                        <div class="empty" id="emptyState">
+                            <div class="empty-icon">🛍️</div>
+                            <h4>No orders yet</h4>
+                            <p>Your customer orders will appear here.</p>
+                        </div>
+                    </div>
+                </section>
+            </section>
 
 
+            <!-- =====================================
+                 ADD ORDER VIEW
+            ====================================== -->
+            <section class="page-view" id="addOrderView" hidden>
+                <div class="welcome-section">
+                    <div>
+                        <span class="section-eyebrow">CUSTOMER TRANSACTIONS</span>
+                        <h1>Add Order</h1>
+                        <p>Enter the customer's information and order details.</p>
+                    </div>
+                </div>
+
+                <section class="content-card add-order-card">
+                    <div class="card-heading">
+                        <div>
+                            <h3>New Customer Order</h3>
+                            <p>Complete the details below to save a new order.</p>
+                        </div>
+                        <span class="heading-decoration">🌊</span>
+                    </div>
+
+                    <form id="orderForm" class="add-order-form" novalidate>
+                        <div class="field">
+                            <label for="customer">Customer Name <span>*</span></label>
+                            <input type="text" id="customer" maxlength="80"
+                                   autocomplete="name"
+                                   placeholder="Enter customer name" required>
+                        </div>
+                        <div class="field">
+                            <label for="serviceCategory">Service Category <span>*</span></label>
+                            <select id="serviceCategory" required>
+                                <option value="">Select a service category</option>
+                                <option value="ID Picture and Photography">ID Picture and Photography</option>
+                                <option value="Printing Services">Printing Services</option>
+                                <option value="Customized Designs and Layouts">Customized Designs and Layouts</option>
+                                <option value="Tarpaulin and Banner Printing">Tarpaulin and Banner Printing</option>
+                                <option value="School and Office Documents">School and Office Documents</option>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label for="description">Order Details <span>*</span></label>
+                            <input type="text" id="description" maxlength="300"
+                                   placeholder="Describe the customer's order" required>
+                        </div>
+                        <div class="form-fields-row">
                             <div class="field">
                                 <label for="quantity">Quantity <span>*</span></label>
-                                <input
-                                    type="number"
-                                    id="quantity"
-                                    min="1"
-                                    step="1"
-                                    placeholder="Enter quantity"
-                                    required>
+                                <input type="number" id="quantity" min="1" step="1"
+                                       placeholder="Enter quantity" required>
                             </div>
-
                             <div class="field">
                                 <label for="unitPrice">Unit Price (₱) <span>*</span></label>
-                                <input
-                                    type="number"
-                                    id="unitPrice"
-                                    min="0.01"
-                                    step="0.01"
-                                    placeholder="Enter price per item"
-                                    required>
+                                <input type="number" id="unitPrice" min="0.01" step="0.01"
+                                       placeholder="Enter price per item" required>
                                 <small class="field-hint">Enter the selling price of one item.</small>
                             </div>
-
                             <div class="field">
                                 <label for="orderTotal">Order Total</label>
-                                <input
-                                    type="text"
-                                    id="orderTotal"
-                                    value="₱0.00"
-                                    readonly>
+                                <input type="text" id="orderTotal" value="₱0.00" readonly>
                                 <small class="field-hint">Automatically calculated using quantity × unit price.</small>
                             </div>
-
                             <div class="field">
                                 <label for="orderDate">Order Date <span>*</span></label>
-                                <input
-                                    type="date"
-                                    id="orderDate"
-                                    required>
+                                <input type="date" id="orderDate" required>
                             </div>
-
                             <div class="field">
                                 <label for="status">Order Status <span>*</span></label>
                                 <select id="status" required>
@@ -454,95 +469,12 @@
                                     <option value="Completed">Completed</option>
                                 </select>
                             </div>
-
-                            <button type="submit"
-                                    class="primary-btn form-submit-btn"
-                                    id="submitBtn">
-                                ＋ Add Order
-                            </button>
-
-                            <button type="button"
-                                    class="secondary-btn cancel-btn"
-                                    id="cancelEdit"
-                                    hidden>
-                                Cancel Editing
-                            </button>
-
-                        </form>
-
-                    </section>
-
-
-                    <!-- ORDER LIST -->
-                    <section class="content-card order-list-card">
-
-                        <div class="card-heading">
-                            <div>
-                                <h3>All Orders</h3>
-                                <p>Manage and monitor every customer transaction.</p>
-                            </div>
                         </div>
-
-
-                        <div class="toolbar">
-
-                            <div class="search-wrapper">
-                                <span class="search-icon">⌕</span>
-                                <input
-                                    type="search"
-                                    id="search"
-                                    class="search-input"
-                                    aria-label="Search orders"
-                                    placeholder="Search customer or order...">
-                            </div>
-
-                            <select
-                                id="filter"
-                                class="filter-select"
-                                aria-label="Filter orders by status">
-                                <option value="All">All Status</option>
-                                <option value="Pending">Pending</option>
-                                <option value="Processing">Processing</option>
-                                <option value="Completed">Completed</option>
-                            </select>
-
-                        </div>
-
-
-                        <div class="table-wrap">
-
-                            <table aria-label="Customer orders">
-
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Customer</th>
-                                        <th scope="col">Service Category</th>
-                                        <th scope="col">Order Details</th>
-                                        <th scope="col">Quantity</th>
-                                        <th scope="col">Unit Price</th>
-                                        <th scope="col">Total</th>
-                                        <th scope="col">Date</th>
-                                        <th scope="col">Status</th>
-                                        <th scope="col">Actions</th>
-                                    </tr>
-                                </thead>
-
-                                <tbody id="orderList"></tbody>
-
-                            </table>
-
-                            <div class="empty" id="emptyState">
-                                <div class="empty-icon">🛍️</div>
-                                <h4>No orders yet</h4>
-                                <p>Your customer orders will appear here.</p>
-                            </div>
-
-                        </div>
-
-                    </section>
-
-                </div>
-
+                        <button type="submit" class="primary-btn form-submit-btn" id="submitBtn">
+                            ＋ Add Order
+                        </button>
+                    </form>
+                </section>
             </section>
 
 
@@ -676,6 +608,72 @@
 
     </main>
 
+</div>
+
+
+<!-- EDIT ORDER MODAL -->
+<div class="modal-overlay" id="editOrderModal" hidden>
+    <section class="edit-modal" role="dialog" aria-modal="true"
+             aria-labelledby="editModalTitle" aria-describedby="editModalDescription">
+        <div class="card-heading">
+            <div>
+                <h2 id="editModalTitle">Edit Order</h2>
+                <p id="editModalDescription">Update the selected customer's order details.</p>
+            </div>
+            <span class="heading-decoration">🌊</span>
+        </div>
+        <form id="editOrderForm" novalidate>
+            <div class="field">
+                <label for="editCustomer">Customer Name <span>*</span></label>
+                <input type="text" id="editCustomer" maxlength="80" required>
+            </div>
+            <div class="field">
+                <label for="editServiceCategory">Service Category <span>*</span></label>
+                <select id="editServiceCategory" required>
+                    <option value="">Select a service category</option>
+                    <option value="ID Picture and Photography">ID Picture and Photography</option>
+                    <option value="Printing Services">Printing Services</option>
+                    <option value="Customized Designs and Layouts">Customized Designs and Layouts</option>
+                    <option value="Tarpaulin and Banner Printing">Tarpaulin and Banner Printing</option>
+                    <option value="School and Office Documents">School and Office Documents</option>
+                </select>
+            </div>
+            <div class="field">
+                <label for="editDescription">Order Details <span>*</span></label>
+                <input type="text" id="editDescription" maxlength="300" required>
+            </div>
+            <div class="form-fields-row">
+                <div class="field">
+                    <label for="editQuantity">Quantity <span>*</span></label>
+                    <input type="number" id="editQuantity" min="1" step="1" required>
+                </div>
+                <div class="field">
+                    <label for="editUnitPrice">Unit Price (₱) <span>*</span></label>
+                    <input type="number" id="editUnitPrice" min="0.01" step="0.01" required>
+                </div>
+                <div class="field">
+                    <label for="editOrderTotal">Order Total</label>
+                    <input type="text" id="editOrderTotal" value="₱0.00" readonly>
+                </div>
+                <div class="field">
+                    <label for="editOrderDate">Order Date <span>*</span></label>
+                    <input type="date" id="editOrderDate" required>
+                </div>
+                <div class="field">
+                    <label for="editStatus">Order Status <span>*</span></label>
+                    <select id="editStatus" required>
+                        <option value="Pending">Pending</option>
+                        <option value="Processing">Processing</option>
+                        <option value="Completed">Completed</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="secondary-btn cancel-btn" id="cancelEdit">Cancel</button>
+                <button type="submit" class="primary-btn" id="saveEditBtn">Save Changes</button>
+            </div>
+        </form>
+    </section>
 </div>
 
 
